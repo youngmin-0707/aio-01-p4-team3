@@ -79,11 +79,13 @@ flowchart TD
     AB --> H1
     C --> H1
 
-    classDef rag fill:#fff3bf,stroke:#f08c00,stroke-width:2px,color:#000
+    classDef rag fill:#ffe8cc,stroke:#e8590c,stroke-width:3px,color:#000
     class SA,SB rag
+    style MAIN fill:#f1f3f5,stroke:#868e96,color:#000
+    style HO fill:#f1f3f5,stroke:#868e96,color:#000
 ```
 
-> 🔍 노란 칸은 손영민이 맡은 RAG 검색(`team3-search` · `team3-index`)입니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
+> 🔍 주황 테두리 칸은 손영민이 맡은 RAG 검색(`team3-search` · `team3-index`)입니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
 
 <details>
 <summary>글자로 된 원래 흐름도 보기</summary>
