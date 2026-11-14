@@ -63,21 +63,6 @@
 
 > ④의 **문서 검색**(RAG)은 손영민이 맡았습니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
 
-<details>
-<summary>글자로 된 원래 흐름도 보기</summary>
-
-```text
-직원 · 어르신 · 약사 화면 (Next.js)
-        │ POST /api/ask
-FastAPI (api/) ── 정해 둔 요청 모양으로 바꿔서 ──▶ n8n team3-support (본체 = 입구 워크플로우)
-                                            입력 검사 → 분류 → 유형별 처리 표 → 처리 방식 4개
-                                            ├ 자동 답변      (검색 → 답변 → 검증)
-                                            ├ 근거 + 이관    (검색 → 답변 → team3-handoff)
-                                            ├ 이관만         (team3-handoff)
-                                            └ 접수 조회      (본인 건만, 연락처 가림)
-team3-handoff ── 1) 티켓 · 알림 · 실패 대기열(DLQ) 기록
-               └ 2) 약사 화면 · Slack 알림 · Jira(장애만)  ← 2)가 실패해도 응답은 그대로 나감
-```
 
 </details>
 
