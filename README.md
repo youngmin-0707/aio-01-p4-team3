@@ -63,9 +63,6 @@
 
 > ④의 **문서 검색**(RAG)은 손영민이 맡았습니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
 
-
-</details>
-
 자세한 노드 구성은 [워크플로우 설계서](docs/WORKFLOW-DESIGN.md)에, 검색 구조는 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다. 그림에 나온 이관 · 처리 방식 · DLQ 같은 말은 맨 아래 '용어'에 정리했습니다.
 
 ## 결과 한눈에
@@ -132,6 +129,61 @@ uv run tools/flow.py test cases/team.json -v
 
 ## 폴더
 
+```mermaid
+flowchart LR
+    subgraph SRC["📦 원본"]
+        packs["packs/<br/>기능별 문서 · 시나리오 · 데이터"]
+    end
+    subgraph BUILD["🔧 빌드 결과"]
+        knowledge["knowledge/<br/>지식 문서 10개"]
+        data["data/<br/>직원 · 티켓 · 제품"]
+        config["config/<br/>유형별 처리 표"]
+        cases["cases/<br/>시험 시나리오"]
+    end
+    subgraph RUN["⚙️ 실행"]
+        dataapi["data-api<br/>(실습 키트 · 저장소 밖)"]
+        wf["workflows/<br/>n8n 본체 · 🔍검색 · 🔍색인 · 이관"]
+    end
+    subgraph APP["🖥️ 화면 · 서버"]
+        api["api/<br/>FastAPI"]
+        web["web/<br/>Next.js 화면"]
+    end
+    tools["🛠️ tools/<br/>배포 · 시험"]
+
+    packs -->|packs.py build| knowledge
+    packs --> data
+    packs --> config
+    packs --> cases
+    knowledge --> dataapi
+    data --> dataapi
+    dataapi -->|읽기| wf
+    config -.->|본체에 넣음| wf
+    cases --> tools
+    tools -->|배포 · 시험| wf
+    wf <-->|질문 · 티켓| api
+    api <-->|질문 · 답| web
+
+    classDef mine fill:#ffe8cc,stroke:#e8590c,stroke-width:3px,color:#000
+    class knowledge,wf mine
+    style SRC fill:#f1f3f5,stroke:#868e96,color:#000
+    style BUILD fill:#f1f3f5,stroke:#868e96,color:#000
+    style RUN fill:#f1f3f5,stroke:#868e96,color:#000
+    style APP fill:#f1f3f5,stroke:#868e96,color:#000
+```
+
+> 🔍 주황 테두리는 손영민이 맡은 부분입니다(`knowledge/` 검수, `workflows/`의 `team3-index` · `team3-search`). data-api는 강사 실습 키트의 서버라 이 저장소에는 없습니다.
+
+| 그림 밖 폴더 · 파일 | 내용 |
+| --- | --- |
+| `00-DESIGN.md` | 전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오) |
+| `docs/` | 제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정 |
+| `runs/` · `requests/` | 시험 보고서 · 시연과 bench 요청 |
+| `contracts/examples/` | 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀) |
+| `infra/` | docker compose로 data-api · api · web을 한 번에 띄움 |
+
+<details>
+<summary>글자로 된 원래 폴더 목록 보기</summary>
+
 ```text
 00-DESIGN.md        전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오)
 workflows/          n8n 워크플로우 JSON (본체 · 검색 · 색인 · 이관 · 오류 · Jira · Slack), stubs/ = 혼자 개발할 때 쓴 가짜 웹훅
@@ -144,6 +196,8 @@ tools/              flow.py (워크플로우 검사 · 배포 · 시험), packs.
 requests/ runs/     시연 · bench 요청 · 시험 보고서
 docs/               제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정
 ```
+
+</details>
 
 ## 문제 해결
 
