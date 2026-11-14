@@ -53,39 +53,11 @@
 
 ## 흐름 한눈에
 
-```mermaid
-flowchart TD
-    UI["직원 · 어르신 · 약사 화면<br/>(Next.js)"]
-    API["FastAPI (api/)<br/>정해 둔 요청 모양으로 변환"]
-    UI -->|"POST /api/ask"| API
-    API --> CHK
+![질문 하나가 지나가는 길: 입구 검사 → AI 분류 → 처리 방식 → 근거 찾기(접수 조회 · 문서 검색 병렬) → 답 · 검증 → 자동 답변 / 되묻기 / 사람에게 → 출구](docs/images/flow-7steps.png)
 
-    subgraph MAIN["n8n team3-support (본체 = 입구 워크플로우)"]
-        CHK["입력 검사 → 분류 → 유형별 처리 표"]
-        CHK -->|"자동 답변"| SA["🔍 문서 검색"]
-        CHK -->|"근거 + 이관"| SB["🔍 문서 검색"]
-        CHK -->|"이관만"| C["사람에게 넘김"]
-        CHK -->|"접수 조회"| D["본인 건만 보여 줌<br/>연락처 가림"]
-        SA --> AA["답변 → 검증"]
-        SB --> AB["답변"]
-    end
+실제 n8n 노드 32개를 7단계로 묶은 그림입니다(발표 자료 5장). 처리 방식에서 길이 갈라지는 곳이 **분기**, 근거 찾기의 두 갈래가 **병렬**, 위쪽 점선 되묻기(최대 3번)가 **루프**입니다. 공격 · 빈 질문은 입구에서 바로 막아 AI를 부르지 않습니다.
 
-    subgraph HO["team3-handoff (이관)"]
-        H1["① 티켓 · 알림 · 실패 대기열(DLQ) 기록"]
-        H2["② 약사 화면 · Slack 알림 · Jira(장애만)"]
-        H1 -.->|"②가 실패해도 응답은 그대로 나감"| H2
-    end
-
-    AB --> H1
-    C --> H1
-
-    classDef rag fill:#ffe8cc,stroke:#e8590c,stroke-width:3px,color:#000
-    class SA,SB rag
-    style MAIN fill:#f1f3f5,stroke:#868e96,color:#000
-    style HO fill:#f1f3f5,stroke:#868e96,color:#000
-```
-
-> 🔍 주황 테두리 칸은 손영민이 맡은 RAG 검색(`team3-search` · `team3-index`)입니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
+> ④의 **문서 검색**(RAG)은 손영민이 맡았습니다. 설계와 측정값은 [RAG 설계서](docs/RAG-ARCHITECTURE.md)에 있습니다.
 
 <details>
 <summary>글자로 된 원래 흐름도 보기</summary>
