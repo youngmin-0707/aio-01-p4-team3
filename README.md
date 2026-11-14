@@ -129,47 +129,7 @@ uv run tools/flow.py test cases/team.json -v
 
 ## 폴더
 
-```mermaid
-flowchart LR
-    subgraph SRC["📦 원본"]
-        packs["packs/<br/>기능별 문서 · 시나리오 · 데이터"]
-    end
-    subgraph BUILD["🔧 빌드 결과"]
-        knowledge["knowledge/<br/>지식 문서 10개"]
-        data["data/<br/>직원 · 티켓 · 제품"]
-        config["config/<br/>유형별 처리 표"]
-        cases["cases/<br/>시험 시나리오"]
-    end
-    subgraph RUN["⚙️ 실행"]
-        dataapi["data-api<br/>(실습 키트 · 저장소 밖)"]
-        wf["workflows/<br/>n8n 본체 · 🔍검색 · 🔍색인 · 이관"]
-    end
-    subgraph APP["🖥️ 화면 · 서버"]
-        api["api/<br/>FastAPI"]
-        web["web/<br/>Next.js 화면"]
-    end
-    tools["🛠️ tools/<br/>배포 · 시험"]
-
-    packs -->|packs.py build| knowledge
-    packs --> data
-    packs --> config
-    packs --> cases
-    knowledge --> dataapi
-    data --> dataapi
-    dataapi -->|읽기| wf
-    config -.->|본체에 넣음| wf
-    cases --> tools
-    tools -->|배포 · 시험| wf
-    wf <-->|질문 · 티켓| api
-    api <-->|질문 · 답| web
-
-    classDef mine fill:#ffe8cc,stroke:#e8590c,stroke-width:3px,color:#000
-    class knowledge,wf mine
-    style SRC fill:#f1f3f5,stroke:#868e96,color:#000
-    style BUILD fill:#f1f3f5,stroke:#868e96,color:#000
-    style RUN fill:#f1f3f5,stroke:#868e96,color:#000
-    style APP fill:#f1f3f5,stroke:#868e96,color:#000
-```
+![폴더 관계: packs/를 빌드하면 knowledge/ · data/ · config/ · cases/가 생기고, workflows/가 data-api를 통해 읽으며, web/ ↔ api/ ↔ workflows/로 질문과 티켓이 오감](docs/images/folders.png)
 
 > 🔍 주황 테두리는 손영민이 맡은 부분입니다(`knowledge/` 검수, `workflows/`의 `team3-index` · `team3-search`). data-api는 강사 실습 키트의 서버라 이 저장소에는 없습니다.
 
