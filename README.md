@@ -12,7 +12,7 @@
 | 한다영 | 오케스트레이션 (본체 워크플로우), 워크플로우 설계서 |
 | 오병훈 | 연동 · 안정성 (이관 · 오류 처리), FastAPI 백엔드 |
 | 차해든 | 고객 · 직원 · 약사 · 약국장 화면 제작 및 검증 (Next.js) |
-
+<br>
 > **제 기여** · RAG 색인 · 검색 설계 (청킹 3방식 비교 → 소제목 단위 채택, 권한별 색인 분리, 점수 기준 0.37 결정)  
 > **결과** · 처음 보는 질문 21개 모두 정답 문서를 검색 결과 4위 안에서 찾음 · 권한 위반 0건  
 > **기술** · n8n · OpenAI `text-embedding-3-large` (임베딩) · `gpt-4.1-mini` (분류 · 답 작성 · 검증) · n8n In-Memory Vector Store
@@ -30,8 +30,6 @@
 | 직원: 회수 공지 문의 → 약사에게 긴급 이관 | 어르신: 큰 글씨 답 + 출처 + AI 고지 | 약사: 접수 목록 (긴급 먼저) |
 | --- | --- | --- |
 | ![직원 화면](docs/images/demo-staff-recall.png) | ![어르신 화면](docs/images/demo-senior-answer.png) | ![약사 화면](docs/images/demo-pharmacist-list.png) 
-
-<br>
 
 ## 무엇을 하나
 
