@@ -18,7 +18,7 @@
 
 ## 왜 만들었나
 
-창고형 약국은 직원이 많고 교대가 잦아서, 의약품 회수 공지 · 혼자 하는 마감 · 어르신 약 질문처럼 **"이건 내가 처리해도 되나, 약사님께 넘겨야 하나"**를 매번 사람에게 물어야 합니다. 이 도우미는 문서로 답할 수 있는 질문에는 근거와 함께 바로 답합니다. 돈 문제 · 약 판단 · 긴급 건은 반드시 약사 · 약국장에게 넘겨서, 약사는 판단에만 집중할 수 있습니다.
+창고형 약국은 직원이 많고 교대가 잦아서, 의약품 회수 작업 · 혼자 처리하는 마감 · 시니어 고객응대와 같은 **"교대간 인수인계 미흡,고객응대로인한 업무지연"** 이러한 문제들이 있습니다. 이 도우미는 문서로 답할 수 있는 질문에는 근거와 함께 바로 답합니다. 약국 내에서 금전과 관련된 문제 · 약 판단 · 긴급 건은 반드시 약사 · 약국장에게 넘겨서, 약사는 판단에만 집중할 수 있습니다.
 
 
 ## 화면
@@ -69,7 +69,7 @@
 **남은 한계**: 정상 질문과 문서 밖 질문의 점수 간격이 0.012로 좁아 블라인드 질문에서는 두 분포가 겹쳤습니다. 그래서 문서 밖 질문은 분류 단계에서 먼저 거르고, 점수 기준은 두 번째 그물로 남겼습니다. 메모리 저장소라 n8n을 재시작하면 매번 다시 색인해야 하고, 색인 버전 확인은 구현하지 못했습니다. 운영한다면 PGVector 같은 지속형 저장소로 옮겨야 합니다.
 
 
-## 결과 한눈에
+## 시험 결과
 
 팀 VM에서 잰 값입니다. 11/6에 새 기능 추가를 멈추고(기능 동결) 전체를 다시 시험했고, 제출일 11/9에 같은 절차로 한 번 더 재서 같은 결과를 확인했습니다. 시험 종류 · 날짜 · 결과 · 결과 파일을 한 장에 모은 목록은 [`runs/README.md`](runs/README.md), 숫자 해석과 실패 사례는 [실행 결과서](docs/EXECUTION-RESULT.md) 3 · 4절에 있습니다.
 
@@ -95,6 +95,38 @@
 | [실행 결과서](docs/EXECUTION-RESULT.md) | 시나리오별 시험 기록, 실행 로그, 실패 사례, 남은 결함 |
 | [시험 기록 전체 목록](runs/README.md) | 무엇을 · 언제 · 몇 번 시험했고 결과가 어땠는지, 결과 파일 68개 위치 |
 | [전체 설계 기준](00-DESIGN.md) | 계약(요청 · 응답 모양) · 권한 · 데이터 · 시나리오 |
+
+## 폴더 구조
+
+![폴더 관계: packs/를 빌드하면 knowledge/ · data/ · config/ · cases/가 생기고, workflows/가 data-api를 통해 읽으며, web/ ↔ api/ ↔ workflows/로 질문과 티켓이 오감](docs/images/folders.png)
+
+> 🔍 주황 테두리는 손영민이 맡은 부분입니다(`knowledge/` 검수, `workflows/`의 `team3-index` · `team3-search`). data-api는 강사 실습 키트의 서버라 이 저장소에는 없습니다.
+
+| 그림 밖 폴더 · 파일 | 내용 |
+| --- | --- |
+| `00-DESIGN.md` | 전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오) |
+| `docs/` | 제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정 |
+| `runs/` · `requests/` | 시험 보고서 · 시연과 bench 요청 |
+| `contracts/examples/` | 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀) |
+| `infra/` | docker compose로 data-api · api · web을 한 번에 띄움 |
+
+<details>
+<summary>글자로 된 원래 폴더 목록 보기</summary>
+
+```text
+00-DESIGN.md        전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오)
+workflows/          n8n 워크플로우 JSON (본체 · 검색 · 색인 · 이관 · 오류 · Jira · Slack), stubs/ = 혼자 개발할 때 쓴 가짜 웹훅
+packs/              기능(팩)별 원본: 문서 · 시나리오 · 데이터, active.json = 켜진 팩
+knowledge/ data/ cases/team.json config/   ← packs.py build 결과 (고칠 땐 packs/에서)
+cases/common.json   공통 시나리오 14유형
+contracts/examples/ 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀)
+api/ web/ infra/    FastAPI 백엔드 · Next.js 화면 · docker compose
+tools/              flow.py (워크플로우 검사 · 배포 · 시험), packs.py (팩 빌드), setup.sh · deploy_vm.sh
+requests/ runs/     시연 · bench 요청 · 시험 보고서
+docs/               제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정
+```
+
+</details>
 
 ## 바로 실행
 
@@ -130,38 +162,6 @@ uv run tools/flow.py test cases/team.json -v
 | `jiraAio3Cloud001` · `slackAio3Bot0001` | Jira 장애 티켓 · Slack 알림 (실제 모드에서만) |
 
 `tools/flow.py`는 강사 실습 도구에서 팀 Credential만 허용 목록에 더한 버전입니다. 입구 웹훅을 부를 때 `X-Team-Key`를 붙입니다. 키 없이 부르면 n8n이 403을 돌려줍니다.
-
-## 폴더 구조
-
-![폴더 관계: packs/를 빌드하면 knowledge/ · data/ · config/ · cases/가 생기고, workflows/가 data-api를 통해 읽으며, web/ ↔ api/ ↔ workflows/로 질문과 티켓이 오감](docs/images/folders.png)
-
-> 🔍 주황 테두리는 손영민이 맡은 부분입니다(`knowledge/` 검수, `workflows/`의 `team3-index` · `team3-search`). data-api는 강사 실습 키트의 서버라 이 저장소에는 없습니다.
-
-| 그림 밖 폴더 · 파일 | 내용 |
-| --- | --- |
-| `00-DESIGN.md` | 전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오) |
-| `docs/` | 제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정 |
-| `runs/` · `requests/` | 시험 보고서 · 시연과 bench 요청 |
-| `contracts/examples/` | 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀) |
-| `infra/` | docker compose로 data-api · api · web을 한 번에 띄움 |
-
-<details>
-<summary>글자로 된 원래 폴더 목록 보기</summary>
-
-```text
-00-DESIGN.md        전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오)
-workflows/          n8n 워크플로우 JSON (본체 · 검색 · 색인 · 이관 · 오류 · Jira · Slack), stubs/ = 혼자 개발할 때 쓴 가짜 웹훅
-packs/              기능(팩)별 원본: 문서 · 시나리오 · 데이터, active.json = 켜진 팩
-knowledge/ data/ cases/team.json config/   ← packs.py build 결과 (고칠 땐 packs/에서)
-cases/common.json   공통 시나리오 14유형
-contracts/examples/ 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀)
-api/ web/ infra/    FastAPI 백엔드 · Next.js 화면 · docker compose
-tools/              flow.py (워크플로우 검사 · 배포 · 시험), packs.py (팩 빌드), setup.sh · deploy_vm.sh
-requests/ runs/     시연 · bench 요청 · 시험 보고서
-docs/               제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정
-```
-
-</details>
 
 ## 문제 해결
 
