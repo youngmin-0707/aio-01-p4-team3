@@ -96,6 +96,7 @@
 | [시험 기록 전체 목록](runs/README.md) | 무엇을 · 언제 · 몇 번 시험했고 결과가 어땠는지, 결과 파일 68개 위치 |
 | [전체 설계 기준](00-DESIGN.md) | 계약(요청 · 응답 모양) · 권한 · 데이터 · 시나리오 |
 
+
 ## 폴더 구조
 
 ![폴더 관계: packs/를 빌드하면 knowledge/ · data/ · config/ · cases/가 생기고, workflows/가 data-api를 통해 읽으며, web/ ↔ api/ ↔ workflows/로 질문과 티켓이 오감](docs/images/folders.png)
@@ -109,24 +110,6 @@
 | `runs/` · `requests/` | 시험 보고서 · 시연과 bench 요청 |
 | `contracts/examples/` | 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀) |
 | `infra/` | docker compose로 data-api · api · web을 한 번에 띄움 |
-
-<details>
-<summary>글자로 된 원래 폴더 목록 보기</summary>
-
-```text
-00-DESIGN.md        전체 설계 기준 (계약 · 구조 · 권한 · 데이터 · 시나리오)
-workflows/          n8n 워크플로우 JSON (본체 · 검색 · 색인 · 이관 · 오류 · Jira · Slack), stubs/ = 혼자 개발할 때 쓴 가짜 웹훅
-packs/              기능(팩)별 원본: 문서 · 시나리오 · 데이터, active.json = 켜진 팩
-knowledge/ data/ cases/team.json config/   ← packs.py build 결과 (고칠 땐 packs/에서)
-cases/common.json   공통 시나리오 14유형
-contracts/examples/ 부품 사이 연결마다 요청 · 응답 예시 (가짜 웹훅 · 화면의 가짜 응답 · pytest에서 씀)
-api/ web/ infra/    FastAPI 백엔드 · Next.js 화면 · docker compose
-tools/              flow.py (워크플로우 검사 · 배포 · 시험), packs.py (팩 빌드), setup.sh · deploy_vm.sh
-requests/ runs/     시연 · bench 요청 · 시험 보고서
-docs/               제안서 · 헌장 · 설계서 2종 · 실행 결과서 · 데일리 · 화면 QA · RAG 측정
-```
-
-</details>
 
 ## 바로 실행
 
